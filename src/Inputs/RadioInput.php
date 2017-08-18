@@ -29,6 +29,11 @@ class RadioInput extends ChoiceControl
 	private $container;
 
 	/**
+	 * @var bool
+	 */
+	private $stacked;
+
+	/**
 	 * @param  string|object
 	 * @param array|null $items
 	 */
@@ -38,6 +43,12 @@ class RadioInput extends ChoiceControl
 		$this->control->type = 'radio';
 		$this->container = Html::el('fieldset');
 		$this->setOption('type', 'radio');
+		$this->stacked = true;
+	}
+
+	public function setStacked($stacked = true)
+	{
+		$this->stacked = $stacked;
 	}
 
 	/**
@@ -50,29 +61,32 @@ class RadioInput extends ChoiceControl
 		parent::getControl();
 
 		$items = $this->getItems();
-		$container = $this->container;
+		$container = $this->stacked === true ? Html::el('div', ['class' => 'custom-controls-stacked',]) : $this->container;
 
 		foreach ($items as $value => $caption) {
 			$disabledOption = $this->isValueDisabled($value);
 
-			$wrapper = Html::el('div', [
-				'class' => 'form-check' . ($disabledOption ? ' disabled' : ''),
-			]);
-
-			$label = Html::el('label', ['class' => 'form-check-label']);
+			$label = Html::el('label', ['class' => 'custom-control custom-radio']);
 			$input = Html::el('input', [
-				'class'    => 'form-check-input',
+				'class'    => 'custom-control-input',
 				'type'     => 'radio',
 				'value'    => $value,
 				'name'     => $this->name,
 				'checked'  => $this->isValueSelected($value),
 				'disabled' => $disabledOption,
 			]);
+			$indicator = Html::el('span', [
+				'class' => 'custom-control-indicator',
+			]);
+			$description = Html::el('span', [
+				'class' => 'custom-control-description',
+			]);
+			$description->setText($caption);
 			$label->addHtml($input);
-			$label->addText($caption);
-			$wrapper->addHtml($label);
+			$label->addHtml($indicator);
+			$label->addHtml($description);
 
-			$container->addHtml($wrapper);
+			$container->addHtml($label);
 		}
 
 		return $container;

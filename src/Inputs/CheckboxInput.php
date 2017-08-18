@@ -42,15 +42,22 @@ class CheckboxInput extends Checkbox
 	FALSE,
 	                                    $disabled = FALSE)
 	{
-		$label = Html::el('label', ['class' => 'form-check-label']);
+		$label = Html::el('label', ['class' => 'custom-control custom-checkbox']);
 		$input = Html::el('input', [
 			'type'     => 'checkbox',
-			'class'    => 'form-check-input',
+			'class'    => 'custom-control-input',
 			'name'     => $name,
 			'disabled' => $disabled,
 			'required' => $required,
 			'checked'  => $checked,
 		]);
+		$indicator = Html::el('span', [
+			'class' => 'custom-control-indicator',
+		]);
+		$description = Html::el('span', [
+			'class' => 'custom-control-description',
+		]);
+		$description->setText($caption);
 		if ($value !== FALSE) {
 			$input->attrs += [
 				'value' => $value,
@@ -58,13 +65,14 @@ class CheckboxInput extends Checkbox
 		}
 
 		$label->addHtml($input);
-		$label->addText($caption);
+		$label->addHtml($indicator);
+		$label->addHtml($description);
 
 		$line = Html::el('div', [
 			'class' => 'form-check' . ($disabled ? ' disabled' : ''),
 		]);
 		$line->setHtml($label);
 
-		return $line;
+		return $label;
 	}
 }

@@ -96,4 +96,12 @@ class BootstrapForm extends Form
 	{
 		$this->getRenderer()->setMode($renderMode);
 	}
+
+	/**
+	 * @param bool $autocomplete
+	 */
+	public function setAutocomplete($autocomplete)
+	{
+		$this->getRenderer()->setAutocomplete($autocomplete);
+	}
 }

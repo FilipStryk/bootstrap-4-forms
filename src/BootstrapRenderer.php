@@ -14,9 +14,11 @@ namespace Czubehead\BootstrapForms;
 use Czubehead\BootstrapForms\Enums\RenderMode;
 use Czubehead\BootstrapForms\Inputs\SelectInput;
 use Czubehead\BootstrapForms\Inputs\UploadInput;
+use function is_array;
 use Nette;
+use Nette\Forms\Controls\TextBase;
 use Nette\Utils\Html;
-
+use Tracy\Debugger;
 
 /**
  * Converts a Form into Bootstrap 4 HTML output.
@@ -55,7 +57,7 @@ class BootstrapRenderer implements Nette\Forms\IFormRenderer
 			'container'        => 'div class=form-group',
 			'side_container'   => 'div class="form-group row"',
 			'inline_container' => 'div class="form-group mr-2 mb-2 mt-2"',
-			'.error'           => 'has-danger',
+			//'.error'           => 'has-danger',
 		],
 
 		'control' => [
@@ -63,7 +65,7 @@ class BootstrapRenderer implements Nette\Forms\IFormRenderer
 			'side_container' => "div class=col-sm-" . self::defaultControlColumns,
 
 			'description'    => 'small class="form-text text-muted"',
-			'errorcontainer' => 'div class=form-control-feedback',
+			'errorcontainer' => 'div class=invalid-feedback',
 			'erroritem'      => '',
 
 			'.file'   => 'div',
@@ -523,6 +525,13 @@ class BootstrapRenderer implements Nette\Forms\IFormRenderer
 		$el = $control->getControl();
 		if ($el instanceof Html && in_array($el->getName(), ['input', 'textarea'])) {
 			$el->setAttribute('autocomplete', $this->autocomplete ? "on" : "off");
+		}
+
+		$class = $el->getAttribute('class');
+		if ($control->hasErrors() && $control instanceof TextBase) {
+			$el->setAttribute('class', (is_array($class) ? implode(' ', $class) : '') . ' is-invalid');
+		} elseif (!$control->hasErrors() && $control instanceof TextBase) {
+			$el->setAttribute('class', (is_array($class) ? implode(' ', $class) : '') . ' is-valid');
 		}
 
 		if (empty($body->render()) && $this->mode == RenderMode::VerticalMode) {
