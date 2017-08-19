@@ -530,7 +530,7 @@ class BootstrapRenderer implements Nette\Forms\IFormRenderer
 		$class = $el->getAttribute('class');
 		if ($control->hasErrors() && $control instanceof TextBase) {
 			$el->setAttribute('class', (is_array($class) ? implode(' ', $class) : '') . ' is-invalid');
-		} elseif (!$control->hasErrors() && $control instanceof TextBase) {
+		} elseif (!$control->hasErrors() && $control instanceof TextBase && $this->form->isSubmitted()) {
 			$el->setAttribute('class', (is_array($class) ? implode(' ', $class) : '') . ' is-valid');
 		}
 
